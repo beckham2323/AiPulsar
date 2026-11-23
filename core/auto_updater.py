@@ -93,6 +93,7 @@ class GitHubAutoUpdater:
             )
 
         try:
+            set_installed_app_version(tag, self.models_dir)
             tmp_setup = os.path.join(tempfile.gettempdir(), f"Setup_AiPulsar_{tag}.exe")
             urllib.request.urlretrieve(setup_url, tmp_setup)
             if os.path.exists(tmp_setup) and os.path.getsize(tmp_setup) > 1024 * 1024:
@@ -143,3 +144,27 @@ class PulsarAutoUpdater(GitHubAutoUpdater):
                     pass
         import threading
         threading.Thread(target=_run, daemon=True).start()
+
+
+def get_installed_app_version(models_dir: str = "models") -> str:
+    vp = os.path.join(models_dir, "version.json")
+    if os.path.exists(vp):
+        try:
+            with open(vp, "r", encoding="utf-8") as f:
+                v = str(json.load(f).get("version") or "").strip().lstrip("vV")
+                if v:
+                    return v
+        except Exception:
+            pass
+    return "1.0.0"
+
+
+def set_installed_app_version(new_ver: str, models_dir: str = "models"):
+    os.makedirs(models_dir, exist_ok=True)
+    vp = os.path.join(models_dir, "version.json")
+    clean_v = str(new_ver or "1.0.0").strip().lstrip("vV")
+    try:
+        with open(vp, "w", encoding="utf-8") as f:
+            json.dump({"version": clean_v}, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass

@@ -33,10 +33,14 @@ class ProUpgradeDialog:
     BG_CARD = "#0D1117"
     BG_FIELD = "#161B22"
 
-    YOOKASSA_RUB_MONTH = "https://yookassa.ru"
-    YOOKASSA_RUB_YEAR = "https://yookassa.ru"
-    YOOKASSA_USD_MONTH = "https://yookassa.ru"
-    YOOKASSA_USD_YEAR = "https://yookassa.ru"
+    YOOKASSA_RUB_1M = "https://yookassa.ru"
+    YOOKASSA_RUB_3M = "https://yookassa.ru"
+    YOOKASSA_RUB_6M = "https://yookassa.ru"
+    YOOKASSA_RUB_12M = "https://yookassa.ru"
+    YOOKASSA_USD_1M = "https://yookassa.ru"
+    YOOKASSA_USD_3M = "https://yookassa.ru"
+    YOOKASSA_USD_6M = "https://yookassa.ru"
+    YOOKASSA_USD_12M = "https://yookassa.ru"
 
     def __init__(self, root: tk.Widget, on_activated=None):
         self.root = root
@@ -112,7 +116,7 @@ class ProUpgradeDialog:
             ("✦", "Запись экрана (.mp4) и диктофон совещаний"),
             ("✦", "Квантовый мост Телефон↔ПК по QR и Крипто-сейф в фото"),
         ]
-        tk.Label(p_box, text="★ AIPULSAR PRO  •  490 ₽ ($9)/мес  |  1 990 ₽ ($39)/год", bg=self.BG_FIELD, fg=self.ACCENT, font=("Segoe UI Semibold", 10)).pack(anchor="w", pady=(2, 8))
+        tk.Label(p_box, text="👑 AIPULSAR PRO  •  от 299 ₽ ($5)/мес  |  1 990 ₽ ($29)/год", bg=self.BG_FIELD, fg=self.ACCENT, font=("Segoe UI Semibold", 10)).pack(anchor="w", pady=(2, 8))
         tk.Label(p_box, text="✓ Привязка к железу (HWID): лицензия сохраняется при переустановке Windows — просто введите ключ повторно.", bg=self.BG_FIELD, fg="#8BE9FD", font=("Segoe UI", 8)).pack(anchor="w", pady=(0, 6))
 
         for icon, desc in pro_rows:
@@ -260,12 +264,41 @@ class ProUpgradeDialog:
             for w in plans_holder.winfo_children():
                 w.destroy()
 
+            row1 = tk.Frame(plans_holder, bg=self.BG_FIELD)
+            row1.pack(fill=tk.X, pady=(0, 4))
+            row2 = tk.Frame(plans_holder, bg=self.BG_FIELD)
+            row2.pack(fill=tk.X)
+
+            def _open_plan_pay(currency: str, plan_code: str, fallback_url: str, label_price: str):
+                em = _get_valid_email()
+                if not em:
+                    return
+                pyperclip.copy(st["hwid"])
+                try:
+                    from core.yoomoney_pay_bridge import YooMoneyPaymentBridge
+                    ym_b = YooMoneyPaymentBridge()
+                    if str(ym_b.cfg.get("wallet_number", "")).strip() not in ("", "410010000000000"):
+                        ym_b.open_yoomoney_checkout(plan_code)
+                        status_lbl.config(text=f"Открыта оплата ЮMoney ({label_price}). Чек и ключ придут на {em}.", fg="#64FFDA")
+                        _start_auto_activation_watch()
+                        return
+                except Exception:
+                    pass
+                q = urllib.parse.urlencode({"currency": currency, "plan": plan_code, "hwid": st["hwid"], "email": em})
+                webbrowser.open(f"{fallback_url}?{q}")
+                status_lbl.config(text=f"Открыта оплата ({label_price}). После оплаты Pro включится сам, ключ придёт на {em}.", fg="#64FFDA")
+                _start_auto_activation_watch()
+
             if cur == "RUB":
-                tk.Button(plans_holder, text="💳 ЮKASSA: 1 МЕСЯЦ — 490 ₽", command=lambda: _pay_yookassa("RUB", "month", self.YOOKASSA_RUB_MONTH, "490 ₽ / мес"), bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=14, pady=5, cursor="hand2").pack(side=tk.LEFT, padx=(0, 10))
-                tk.Button(plans_holder, text="★ ЮKASSA: 1 ГОД — 1 990 ₽ (ВЫГОДА 66%)", command=lambda: _pay_yookassa("RUB", "year", self.YOOKASSA_RUB_YEAR, "1 990 ₽ / год"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=16, pady=5, cursor="hand2").pack(side=tk.LEFT)
+                tk.Button(row1, text="💳 1 МЕСЯЦ — 299 ₽ (базовый)", command=lambda: _open_plan_pay("RUB", "1M", self.YOOKASSA_RUB_1M, "299 ₽ / 1 мес"), bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row1, text="🔥 3 МЕСЯЦА — 749 ₽ (ВЫГОДА 17%)", command=lambda: _open_plan_pay("RUB", "3M", self.YOOKASSA_RUB_3M, "749 ₽ / 3 мес"), bg="#21262D", fg="#64FFDA", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
+                tk.Button(row2, text="💎 6 МЕСЯЦЕВ — 1 290 ₽ (ВЫГОДА 28%)", command=lambda: _open_plan_pay("RUB", "6M", self.YOOKASSA_RUB_6M, "1 290 ₽ / 6 мес"), bg="#21262D", fg="#8BE9FD", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row2, text="👑 1 ГОД — 1 990 ₽ (ВЫГОДА 45%)", command=lambda: _open_plan_pay("RUB", "12M", self.YOOKASSA_RUB_12M, "1 990 ₽ / 1 год"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
             else:
-                tk.Button(plans_holder, text="💳 YOOKASSA USD: 1 MONTH — $9", command=lambda: _pay_yookassa("USD", "month", self.YOOKASSA_USD_MONTH, "$9 / month"), bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=14, pady=5, cursor="hand2").pack(side=tk.LEFT, padx=(0, 10))
-                tk.Button(plans_holder, text="★ YOOKASSA USD: 1 YEAR — $39 (SAVE 64%)", command=lambda: _pay_yookassa("USD", "year", self.YOOKASSA_USD_YEAR, "$39 / year"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=16, pady=5, cursor="hand2").pack(side=tk.LEFT)
+                tk.Button(row1, text="💳 1 MONTH — $5 (Base)", command=lambda: _open_plan_pay("USD", "1M", self.YOOKASSA_USD_1M, "$5 / 1 mo"), bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row1, text="🔥 3 MONTHS — $12 (SAVE 20%)", command=lambda: _open_plan_pay("USD", "3M", self.YOOKASSA_USD_3M, "$12 / 3 mo"), bg="#21262D", fg="#64FFDA", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
+                tk.Button(row2, text="💎 6 MONTHS — $20 (SAVE 33%)", command=lambda: _open_plan_pay("USD", "6M", self.YOOKASSA_USD_6M, "$20 / 6 mo"), bg="#21262D", fg="#8BE9FD", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row2, text="👑 1 YEAR — $29 (SAVE 52%)", command=lambda: _open_plan_pay("USD", "12M", self.YOOKASSA_USD_12M, "$29 / 1 yr"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         btn_rub = tk.Button(tabs_bar, text="🇷🇺 ОПЛАТА В РУБЛЯХ (₽)", command=lambda: _switch_currency_tab("RUB"), relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=3, cursor="hand2")
         btn_rub.pack(side=tk.LEFT, padx=(0, 6))
