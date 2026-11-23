@@ -1,0 +1,15 @@
+{
+  "tier": "ULTRA",
+  "gpu_name": "NVIDIA GeForce RTX 4060",
+  "vram_gb": 8.0,
+  "ram_gb": 31.8,
+  "cpu_cores": 12,
+  "eye_res": 520,
+  "ui_fps_ms": 50,
+  "preferred_models": [
+    "oko-ru",
+    "qwen2.5:7b"
+  ],
+  "num_ctx": 4096,
+  "num_gpu": 99
+}

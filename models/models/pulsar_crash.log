@@ -1,0 +1,13 @@
+
+--- CRASH SHIELD ---
+Traceback (most recent call last):
+  File "D:\voice_os_agent\main.py", line 545, in <module>
+    main()
+  File "D:\voice_os_agent\main.py", line 541, in main
+    ui.run_mainloop()
+  File "D:\voice_os_agent\core\oko_environment.py", line 357, in run_mainloop
+    _nav_btn(sec_tools, "🌐  Браузер", lambda: ctypes.windll.shell32.ShellExecuteW(0, "open", "https://", None, None, 1))
+  File "D:\voice_os_agent\core\oko_environment.py", line 308, in _nav_btn
+    title_part = parts.strip() if len(parts) == 2 else text_lbl.strip()
+                 ^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'strip'
