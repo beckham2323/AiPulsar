@@ -1,3 +1,14 @@
+import sys
+if "--daemon-helper-tester" in sys.argv:
+    from core.background_evolution_daemon import run_daemon_forever
+    run_daemon_forever("models")
+    sys.exit(0)
+try:
+    from core.background_evolution_daemon import ensure_background_daemon_started
+    ensure_background_daemon_started("models")
+except Exception:
+    pass
+
 # -*- coding: utf-8 -*-
 import os as _os, sys as _sys
 _exe_dir = _os.path.dirname(_os.path.abspath(_sys.executable)) if getattr(_sys, "frozen", False) else _os.path.dirname(_os.path.abspath(__file__))

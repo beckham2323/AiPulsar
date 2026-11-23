@@ -136,9 +136,16 @@ async function startCall() {{
   try {{
     localStream = await navigator.mediaDevices.getUserMedia({{ video: true, audio: true }});
     document.getElementById('localVideo').srcObject = localStream;
-  }} catch (err) {{
-    setStatus("Ошибка доступа к камере/микрофону: " + err.message);
-    return;
+  }} catch (e1) {{
+    try {{
+      localStream = await navigator.mediaDevices.getUserMedia({{ video: false, audio: true }});
+      setStatus("🎙️ Камера не найдена — подключён голосовой режим по микрофону");
+    }} catch (e2) {{
+      const actx = new (window.AudioContext || window.webkitAudioContext)();
+      const dest = actx.createMediaStreamDestination();
+      localStream = dest.stream;
+      setStatus("💬 Режим текстового чата и приёма звонка (микрофон не обнаружен)");
+    }}
   }}
 
   const peerId = IS_HOST ? (ROOM_ID + "-HOST") : (ROOM_ID + "-GUEST-" + Math.floor(Math.random()*9000+1000));

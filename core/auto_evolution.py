@@ -138,6 +138,11 @@ class PulsarAutoEvolutionEngine:
                 idle_sec = _get_idle_seconds()
                 if idle_sec >= 300:
                     self._scan_idle_documents()
+                    if not getattr(self, '_tested_in_idle', False):
+                        self._tested_in_idle = True
+                        rep = self.run_helper_and_tester_cycle()
+                        if self.notify_cb:
+                            self.notify_cb('AiPulsar', rep)
                     if not self._suggested_today and len(self.data.get("app_stats", {})) >= 2 and self.notify_cb:
                         self._suggested_today = True
                         top2 = sorted(self.data["app_stats"].items(), key=lambda x: x[1], reverse=True)[:2]
@@ -149,3 +154,86 @@ class PulsarAutoEvolutionEngine:
                         )
             except Exception:
                 pass
+
+
+    def run_helper_and_tester_cycle(self) -> str:
+        """Связка ИИ-Помощник + ИИ-Тестер: создаёт новый навык в models/skills и проверяет его перед допуском."""
+        import ast
+        import importlib.util
+        from core.ultra_brain_cascade import UltraBrainFreeCascade
+
+        skills_dir = os.path.join(self.models_dir, "skills")
+        os.makedirs(skills_dir, exist_ok=True)
+        log_path = os.path.join(self.models_dir, "helper_tester_log.json")
+
+        existing = sorted(f for f in os.listdir(skills_dir) if f.startswith("skill_") and f.endswith(".py"))
+        idx_num = len(existing) + 1
+        skill_name = f"skill_auto_{idx_num:03d}"
+        skill_file = os.path.join(skills_dir, f"{skill_name}.py")
+
+        # 1. ИИ-Помощник генерирует компактный, безопасный Python-модуль с функцией run()
+        brain = UltraBrainFreeCascade()
+        prompt = [
+            {
+                "role": "system",
+                "content": (
+                    "Ты — ИИ-Помощник AiPulsar. Напиши компактный, полезный и безопасный Python-модуль для Windows 11 "
+                    "(например, проверка свободного места на диске, подсчёт загрузки RAM/CPU, очистка старых временных файлов в TEMP или проверка пинга). "
+                    "В модуле обязательно должна быть функция run() -> str, которая возвращает короткий отчёт на русском языке. "
+                    "Выдай ТОЛЬКО чистый Python-код без markdown-обёрток ```."
+                ),
+            },
+            {"role": "user", "content": f"Создай новый полезный системный навык #{idx_num} для AiPulsar."},
+        ]
+        raw_code = brain.ask_ultra_brain(prompt, mode="code") or ""
+        clean_code = re.sub(r"^```(?:python)?\s*|\s*```$", "", raw_code.strip(), flags=re.IGNORECASE).strip()
+
+        if "def run" not in clean_code:
+            clean_code = (
+                "import psutil\n\n"
+                "def run() -> str:\n"
+                "    mem = psutil.virtual_memory()\n"
+                "    disk = psutil.disk_usage('C:/')\n"
+                "    return f'RAM: {mem.percent}% свободно {mem.available // (1024**2)} МБ | Диск C: свободно {disk.free // (1024**3)} ГБ'\n"
+            )
+
+        # 2. ИИ-Тестер проверяет код на безопасность, синтаксис AST и выполняет контрольный прогон run()
+        banned = ("os.remove", "shutil.rmtree", "format ", "del /f", "subprocess.Popen", "os.system")
+        if any(b in clean_code for b in banned):
+            verdict = "REJECTED (небезопасный вызов)"
+            output_preview = ""
+        else:
+            try:
+                ast.parse(clean_code)
+                with open(skill_file, "w", encoding="utf-8") as f:
+                    f.write("# -*- coding: utf-8 -*-\n" + clean_code + "\n")
+                spec = importlib.util.spec_from_file_location(skill_name, skill_file)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                res = str(mod.run())
+                verdict = "PASSED"
+                output_preview = res[:140]
+            except Exception as e:
+                verdict = f"FAILED ({e})"
+                output_preview = ""
+                if os.path.exists(skill_file):
+                    os.remove(skill_file)
+
+        # Сохраняем отчёт Помощника и Тестера
+        history = []
+        if os.path.exists(log_path):
+            try:
+                with open(log_path, "r", encoding="utf-8") as lf:
+                    history = json.load(lf)
+            except Exception:
+                history = []
+        history.append({
+            "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "skill": skill_name,
+            "tester_verdict": verdict,
+            "result": output_preview,
+        })
+        with open(log_path, "w", encoding="utf-8") as lf:
+            json.dump(history[-50:], lf, ensure_ascii=False, indent=2)
+
+        return f"🤖 Помощник + 🧪 Тестер [{skill_name}]: статус {verdict}. Результат теста: {output_preview}"

@@ -649,11 +649,11 @@ class AiPulsarEnvironmentWindow:
         voice_btn.pack(side=tk.RIGHT, padx=(0, 6))
 
         from core.pulsar_vision_face import PulsarVisionSystem
-        PulsarVisionSystem.set_eyes_enabled(False)
+        getattr(PulsarVisionSystem, 'set_eyes_enabled', lambda s: setattr(PulsarVisionSystem, '_EYES_ENABLED', s))(False)
 
         vision_btn = tk.Button(
             vhdr,
-            text="🙈 Зрение",
+            text="🙈 Зрение выключено",
             bg=self.BTN_BG,
             fg=self.WHITE,
             activebackground=self.BTN_HOVER,
@@ -670,7 +670,7 @@ class AiPulsarEnvironmentWindow:
             try:
                 if vision_btn.winfo_exists():
                     vision_btn.config(
-                        text="🟢 Зрение" if is_on else "🙈 Зрение",
+                        text="🟢 Зрение включено" if is_on else "🙈 Зрение выключено",
                         bg="#133A2A" if is_on else self.BTN_BG,
                         fg="#64FFDA" if is_on else self.WHITE,
                     )
@@ -679,7 +679,7 @@ class AiPulsarEnvironmentWindow:
 
         def _toggle_vision_btn():
             vis = PulsarVisionSystem(models_dir=self.models_dir)
-            if not PulsarVisionSystem._EYES_ENABLED:
+            if not getattr(PulsarVisionSystem, '_EYES_ENABLED', False):
                 vis.open_resizable_vision_window(root, on_state_changed=_sync_vision_btn_state)
             else:
                 try:
@@ -689,7 +689,7 @@ class AiPulsarEnvironmentWindow:
                     pass
                 vis.toggle_guard_mode(False)
                 vis.toggle_presence_autopause(False)
-                PulsarVisionSystem.set_eyes_enabled(False)
+                getattr(PulsarVisionSystem, 'set_eyes_enabled', lambda s: setattr(PulsarVisionSystem, '_EYES_ENABLED', s))(False)
                 _sync_vision_btn_state(False)
 
         vision_btn.config(command=_toggle_vision_btn)
