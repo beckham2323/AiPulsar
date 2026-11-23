@@ -1,0 +1,17 @@
+﻿.venv311/
+build/
+dist/
+pyi_cache/
+__pycache__/
+*.pyc
+*.pyo
+*.spec
+*.zip
+Setup_AiPulsar.exe
+AiPulsar_Release_Ready/
+models/whisper_small/
+models/*.json
+models/*.jsonl
+models/*.log
+*.txt
+!LICENSE.txt

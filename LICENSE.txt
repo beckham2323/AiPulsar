@@ -1,0 +1,10 @@
+﻿Pulsar v1.0.0 — Computer Software
+Author & Copyright Holder: V.E. Smirnov (VESKOR)
+Contact Email: veskor.dev-2026@yandex.ru
+© 2026 V.E. Smirnov (VESKOR). All rights reserved.
+
+PROPRIETARY SOFTWARE LICENSE:
+All intellectual property rights, source code, algorithms, visual assets, and compiled binaries
+of Pulsar belong exclusively to V.E. Smirnov (VESKOR). Unauthorized copying, reverse engineering,
+decompilation, modification, or distribution without prior written permission from the copyright
+holder (veskor.dev-2026@yandex.ru) is strictly prohibited.

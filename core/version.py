@@ -1,0 +1,7 @@
+APP_NAME = "AiPulsar"
+APP_VERSION = "1.0.0"
+APP_AUTHOR = "V.E. Smirnov"
+APP_COMPANY = "VESKOR"
+APP_EMAIL = "veskor.dev-2026@yandex.ru"
+APP_COPYRIGHT = "© 2026 V.E. Smirnov (VESKOR). All rights reserved."
+UPDATE_MANIFEST_URL = "https://githubusercontent.com"
