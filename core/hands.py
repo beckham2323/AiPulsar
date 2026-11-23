@@ -1,3 +1,4 @@
+from core.action_verifier import VisualActionVerifier
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 V.E. Smirnov (VESKOR). All rights reserved.
 # Author: V.E. Smirnov | Company: VESKOR | Contact: veskor.dev-2026@yandex.ru
@@ -163,7 +164,7 @@ class HandsExecutor:
             url = f"https://ya.ru{encoded}&lr=75"
             place = "Яндексе"
 
-        os.startfile(url)
+        url = VisualActionVerifier.open_and_verify(url)
         return f"Открыла новую вкладку в браузере и ищу «{q}» в {place}."
 
     def smart_cmd_open(self, target: str) -> str:

@@ -28,10 +28,10 @@ from core.version import APP_COPYRIGHT, APP_EMAIL
 class ProUpgradeDialog:
     """Окно сравнения Free / Pro с вкладками оплаты в рублях (₽) и долларах ($) на месяц и на год."""
 
-    ACCENT = "#7C4DFF"
-    BG_ROOT = "#07090E"
-    BG_CARD = "#0D1117"
-    BG_FIELD = "#161B22"
+    ACCENT = "#0078D4"
+    BG_ROOT = "#202020"
+    BG_CARD = "#202020"
+    BG_FIELD = "#2B2B2B"
 
     YOOKASSA_RUB_1M = "https://yookassa.ru"
     YOOKASSA_RUB_3M = "https://yookassa.ru"
@@ -167,7 +167,7 @@ class ProUpgradeDialog:
 
             threading.Thread(target=_watch_loop, daemon=True).start()
 
-        tk.Button(top_act, text="📋 КОПИРОВАТЬ ID", command=_copy_hwid, bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI", 8), padx=8, pady=3, cursor="hand2").pack(side=tk.RIGHT)
+        tk.Button(top_act, text="📋 КОПИРОВАТЬ ID", command=_copy_hwid, bg="#323232", fg="#FFFFFF", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI", 8), padx=8, pady=3, cursor="hand2").pack(side=tk.RIGHT)
 
         trial_dlg_btn = tk.Button(top_act, text="🎁 ВКЛЮЧИТЬ ПРОБНЫЙ PRO НА 3 ДНЯ", bg="#112A27", fg="#64FFDA", activebackground="#1A3F3A", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=10, pady=3, cursor="hand2")
         def _start_trial_and_hide():
@@ -254,8 +254,8 @@ class ProUpgradeDialog:
                 else:
                     messagebox.showwarning("Проверка лицензии", msg_f)
 
-        tk.Button(rec_box, text="💾 Сохранить резервный файл ключа (.lic)", command=_backup_lic_click, bg="#21262D", fg="#E6EDF3", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI", 8), padx=10, pady=4, cursor="hand2").pack(side=tk.LEFT, padx=(0, 8))
-        tk.Button(rec_box, text="🔄 Восстановить по HWID / Файлу (без почты)", command=_restore_hwid_click, bg="#21262D", fg="#58A6FF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI", 8), padx=10, pady=4, cursor="hand2").pack(side=tk.LEFT)
+        tk.Button(rec_box, text="💾 Сохранить резервный файл ключа (.lic)", command=_backup_lic_click, bg="#323232", fg="#E6EDF3", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI", 8), padx=10, pady=4, cursor="hand2").pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(rec_box, text="🔄 Восстановить по HWID / Файлу (без почты)", command=_restore_hwid_click, bg="#323232", fg="#58A6FF", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI", 8), padx=10, pady=4, cursor="hand2").pack(side=tk.LEFT)
 
 
         def _switch_currency_tab(cur: str):
@@ -290,15 +290,15 @@ class ProUpgradeDialog:
                 _start_auto_activation_watch()
 
             if cur == "RUB":
-                tk.Button(row1, text="💳 1 МЕСЯЦ — 299 ₽ (базовый)", command=lambda: _open_plan_pay("RUB", "1M", self.YOOKASSA_RUB_1M, "299 ₽ / 1 мес"), bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
-                tk.Button(row1, text="🔥 3 МЕСЯЦА — 749 ₽ (ВЫГОДА 17%)", command=lambda: _open_plan_pay("RUB", "3M", self.YOOKASSA_RUB_3M, "749 ₽ / 3 мес"), bg="#21262D", fg="#64FFDA", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
-                tk.Button(row2, text="💎 6 МЕСЯЦЕВ — 1 290 ₽ (ВЫГОДА 28%)", command=lambda: _open_plan_pay("RUB", "6M", self.YOOKASSA_RUB_6M, "1 290 ₽ / 6 мес"), bg="#21262D", fg="#8BE9FD", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
-                tk.Button(row2, text="👑 1 ГОД — 1 990 ₽ (ВЫГОДА 45%)", command=lambda: _open_plan_pay("RUB", "12M", self.YOOKASSA_RUB_12M, "1 990 ₽ / 1 год"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
+                tk.Button(row1, text="💳 1 МЕСЯЦ — 299 ₽ (базовый)", command=lambda: _open_plan_pay("RUB", "1M", self.YOOKASSA_RUB_1M, "299 ₽ / 1 мес"), bg="#323232", fg="#FFFFFF", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row1, text="🔥 3 МЕСЯЦА — 749 ₽ (ВЫГОДА 17%)", command=lambda: _open_plan_pay("RUB", "3M", self.YOOKASSA_RUB_3M, "749 ₽ / 3 мес"), bg="#323232", fg="#64FFDA", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
+                tk.Button(row2, text="💎 6 МЕСЯЦЕВ — 1 290 ₽ (ВЫГОДА 28%)", command=lambda: _open_plan_pay("RUB", "6M", self.YOOKASSA_RUB_6M, "1 290 ₽ / 6 мес"), bg="#323232", fg="#8BE9FD", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row2, text="👑 1 ГОД — 1 990 ₽ (ВЫГОДА 45%)", command=lambda: _open_plan_pay("RUB", "12M", self.YOOKASSA_RUB_12M, "1 990 ₽ / 1 год"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#106EBE", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
             else:
-                tk.Button(row1, text="💳 1 MONTH — $5 (Base)", command=lambda: _open_plan_pay("USD", "1M", self.YOOKASSA_USD_1M, "$5 / 1 mo"), bg="#21262D", fg="#FFFFFF", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
-                tk.Button(row1, text="🔥 3 MONTHS — $12 (SAVE 20%)", command=lambda: _open_plan_pay("USD", "3M", self.YOOKASSA_USD_3M, "$12 / 3 mo"), bg="#21262D", fg="#64FFDA", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
-                tk.Button(row2, text="💎 6 MONTHS — $20 (SAVE 33%)", command=lambda: _open_plan_pay("USD", "6M", self.YOOKASSA_USD_6M, "$20 / 6 mo"), bg="#21262D", fg="#8BE9FD", activebackground="#30363D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
-                tk.Button(row2, text="👑 1 YEAR — $29 (SAVE 52%)", command=lambda: _open_plan_pay("USD", "12M", self.YOOKASSA_USD_12M, "$29 / 1 yr"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
+                tk.Button(row1, text="💳 1 MONTH — $5 (Base)", command=lambda: _open_plan_pay("USD", "1M", self.YOOKASSA_USD_1M, "$5 / 1 mo"), bg="#323232", fg="#FFFFFF", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row1, text="🔥 3 MONTHS — $12 (SAVE 20%)", command=lambda: _open_plan_pay("USD", "3M", self.YOOKASSA_USD_3M, "$12 / 3 mo"), bg="#323232", fg="#64FFDA", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
+                tk.Button(row2, text="💎 6 MONTHS — $20 (SAVE 33%)", command=lambda: _open_plan_pay("USD", "6M", self.YOOKASSA_USD_6M, "$20 / 6 mo"), bg="#323232", fg="#8BE9FD", activebackground="#3D3D3D", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+                tk.Button(row2, text="👑 1 YEAR — $29 (SAVE 52%)", command=lambda: _open_plan_pay("USD", "12M", self.YOOKASSA_USD_12M, "$29 / 1 yr"), bg=self.ACCENT, fg="#FFFFFF", activebackground="#106EBE", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         btn_rub = tk.Button(tabs_bar, text="🇷🇺 ОПЛАТА В РУБЛЯХ (₽)", command=lambda: _switch_currency_tab("RUB"), relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=3, cursor="hand2")
         btn_rub.pack(side=tk.LEFT, padx=(0, 6))
@@ -326,7 +326,7 @@ class ProUpgradeDialog:
                     self.on_activated()
 
         key_entry.bind("<Return>", lambda _e: _activate())
-        tk.Button(key_row, text="АКТИВИРОВАТЬ", command=_activate, bg=self.ACCENT, fg="#FFFFFF", activebackground="#651FFF", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.RIGHT)
+        tk.Button(key_row, text="АКТИВИРОВАТЬ", command=_activate, bg=self.ACCENT, fg="#FFFFFF", activebackground="#106EBE", relief=tk.FLAT, font=("Segoe UI Semibold", 8), padx=12, pady=4, cursor="hand2").pack(side=tk.RIGHT)
 
         tk.Label(a_box, text="Promo", bg=self.BG_FIELD, fg="#8B949E", font=("Segoe UI", 7)).pack(anchor="w", padx=(132, 0), pady=(1, 2))
         status_lbl.pack(anchor="w", pady=(1, 0))
@@ -338,6 +338,8 @@ class ProUpgradeDialog:
 
         win.update_idletasks()
         apply_win11_round_corners(win)
+        from core.win11_theme import apply_win11_window_style
+        apply_win11_window_style(win)
 
         def _calc_pro_xy():
             rw = self.root.winfo_width() or 1260

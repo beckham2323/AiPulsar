@@ -1,3 +1,4 @@
+from core.action_verifier import VisualActionVerifier
 # -*- coding: utf-8 -*-
 # Copyright (c) 2026 V.E. Smirnov (VESKOR). All rights reserved.
 # Author: V.E. Smirnov | Company: VESKOR | Contact: veskor.dev-2026@yandex.ru
@@ -75,18 +76,18 @@ class SystemAndBrowserControl:
 
         if ("youtube" in key or "ютуб" in key) and q:
             url = f"https://youtube.com/results?search_query={urllib.parse.quote(q)}"
-            os.startfile(url)
+            url = VisualActionVerifier.open_and_verify(url)
             return f"Открыл YouTube с поиском: «{q}»."
 
         if q:
             url = f"https://ya.ru{urllib.parse.quote(q)}"
-            os.startfile(url)
+            url = VisualActionVerifier.open_and_verify(url)
             return f"Открыл поиск Яндекса по запросу: «{q}»."
 
         url = self.SITES_MAP.get(key)
         if not url:
             url = target if target.startswith("http") else f"https://ya.ru{urllib.parse.quote(target)}"
-        os.startfile(url)
+        url = VisualActionVerifier.open_and_verify(url)
         return f"Открыл в браузере: {url}"
 
     def power_control(self, action: str, minutes: int = 0) -> str:

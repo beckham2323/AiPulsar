@@ -1,3 +1,4 @@
+from core.win11_theme import apply_win11_window_style
 from tkinter import filedialog
 from core.pc_doctor import show_system_health_window
 from core.ui_widgets import attach_tab_popup_to_main
@@ -646,6 +647,53 @@ class AiPulsarEnvironmentWindow:
 
         voice_btn.config(command=_toggle_voice_out)
         voice_btn.pack(side=tk.RIGHT, padx=(0, 6))
+
+        from core.pulsar_vision_face import PulsarVisionSystem
+        PulsarVisionSystem.set_eyes_enabled(False)
+
+        vision_btn = tk.Button(
+            vhdr,
+            text="🙈 Зрение",
+            bg=self.BTN_BG,
+            fg=self.WHITE,
+            activebackground=self.BTN_HOVER,
+            activeforeground=self.WHITE,
+            relief=tk.FLAT,
+            font=("Segoe UI", 8),
+            padx=8,
+            pady=2,
+            cursor="hand2",
+        )
+        self._vision_top_btn = vision_btn
+
+        def _sync_vision_btn_state(is_on: bool):
+            try:
+                if vision_btn.winfo_exists():
+                    vision_btn.config(
+                        text="🟢 Зрение" if is_on else "🙈 Зрение",
+                        bg="#133A2A" if is_on else self.BTN_BG,
+                        fg="#64FFDA" if is_on else self.WHITE,
+                    )
+            except Exception:
+                pass
+
+        def _toggle_vision_btn():
+            vis = PulsarVisionSystem(models_dir=self.models_dir)
+            if not PulsarVisionSystem._EYES_ENABLED:
+                vis.open_resizable_vision_window(root, on_state_changed=_sync_vision_btn_state)
+            else:
+                try:
+                    if PulsarVisionSystem._VISION_WIN is not None and PulsarVisionSystem._VISION_WIN.winfo_exists():
+                        PulsarVisionSystem._VISION_WIN.destroy()
+                except Exception:
+                    pass
+                vis.toggle_guard_mode(False)
+                vis.toggle_presence_autopause(False)
+                PulsarVisionSystem.set_eyes_enabled(False)
+                _sync_vision_btn_state(False)
+
+        vision_btn.config(command=_toggle_vision_btn)
+        vision_btn.pack(side=tk.RIGHT, padx=(0, 6))
 
         self.log_text = tk.Text(
             vbox,
